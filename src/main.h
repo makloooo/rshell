@@ -18,7 +18,7 @@ using namespace std;
 
 int checkConnectors(char* argv) {
     // This will be returning flags.
-    if (strcmp(argv, ";") == 0) return 0;
+    if (strcmp(argv, ";") == 0 || argv[strlen(argv) - 1] == ';') return 0;
     else if (strcmp(argv, "#") == 0) return 3;
     else if (strcmp(argv, "||") == 0) return 1;
     else if (strcmp(argv, "&&") == 0) return 2;
@@ -36,7 +36,7 @@ bool isDblConnector(char* argv) {
 }
 
 bool isAttached(char* argv) {
-    if (argv[strlen(argv - 1)] == ';') return true;
+    if (strlen(argv) > 1 && (argv[strlen(argv) - 1] == ';')) return true;
     return false;
 }
 
@@ -67,7 +67,8 @@ void printArg(char* argv) {
 
 void printArgs(char* argv[]) {
    for (int i = 0; argv[i] != '\0'; ++i) {
-        printArg(argv[i]);
+        
+        cout << '\''; printArg(argv[i]); cout << '\'';
         if (argv[i+1] != '\0') cout << ' ';
     }
 }

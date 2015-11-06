@@ -83,12 +83,11 @@ int main(int argc, char* argv[], char *envp[]) {
                     strcpy(tokens.front(), ";\0"); // strcpy sets its values to be ";\0"
                     ++i; // Progressing to the next value of cmd, since it was assigned in this instance
                 }
-                cmd[n][i] = '\0';
-                // cout << "[DEBUG] Pushing in '"; printArgs(cmd[n]); cout << '\'' << endl;
-                
+                cmd[n][i] = '\0'; // Null terminating cmd
+                // cout << "[DEBUG] Pushing in \""; printArgs(cmd[n]); cout << '\"' << endl;
                 arguments.push(cmd[n]); // If we ran into a connector, that means we have a full argument already
                 // Arguments gets a pointer to a block of cstrings
-                // cout << "[DEBUG] Pushed in '"; printArgs(arguments.back()); cout << '\'' << endl;
+                // cout << "[DEBUG] Pushed in \""; printArgs(arguments.back()); cout << '\"' << endl;
                 connectors.push(tokens.front());
               
                 ++n;
@@ -113,12 +112,12 @@ int main(int argc, char* argv[], char *envp[]) {
         
 
         // Debug printing
-        /*
+        
         cout << "[DEBUG] Size of 'arguments': " << arguments.size() << endl;
         cout << "[DEBUG] Size of 'connectors': " << connectors.size() << endl;
         cout << "[DEBUG] Contents of 'arguments': " << endl; printQueue(arguments);
         cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);
-        */
+        
 
         // Runs through both queues simutaneously
         // After the first run, logic is checked parallel to arguments run
