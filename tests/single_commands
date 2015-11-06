@@ -1,0 +1,53 @@
+Script started on Fri 06 Nov 2015 03:24:55 AM PST
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ make
+rm -rf bin
+mkdir -p bin
+g++ -Wall -Werror -ansi -pedantic ./src/rshell.cpp ./src/main.h ./src/connector.h -o ./bin/rshell
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md  makefile  README.md  single_commands  src  tests
+mlieu002@hammer.cs.ucr.edu$ ls -a
+.  ..  bin  .git  LICENSE.md  makefile	README.md  single_commands  src  tests
+mlieu002@hammer.cs.ucr.edu$ mkdir a
+mlieu002@hammer.cs.ucr.edu$ ls -a
+a  bin	LICENSE.md  makefile  README.md  single_commands  src  tests
+mlieu002@hammer.cs.ucr.edu$ rmdir a
+mlieu002@hammer.cs.ucr.edu$ ls # aaaaaaaaaaaaaa
+bin  LICENSE.md  makefile  README.md  single_commands  src  tests
+mlieu002@hammer.cs.ucr.edu$ ls # -lRasdfsadfsadf
+bin  LICENSE.md  makefile  README.md  single_commands  src  tests
+mlieu002@hammer.cs.ucr.edu$ echo hello world!
+hello world!
+mlieu002@hammer.cs.ucr.edu$ echo                                hi im super farr
+hi im super farr
+mlieu002@hammer.cs.ucr.edu$ cal
+    November 2015   
+Su Mo Tu We Th Fr Sa
+ 1  2  3  4  5  6  7
+ 8  9 10 11 12 13 14
+15 16 17 18 19 20 21
+22 23 24 25 26 27 28
+29 30
+
+mlieu002@hammer.cs.ucr.edu$ date
+Fri Nov  6 03:26:07 PST 2015
+mlieu002@hammer.cs.ucr.edu$ pwd
+/class/classes/mlieu002/git/rshell
+mlieu002@hammer.cs.ucr.edu$ git status
+# On branch exec
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	bin/
+#	single_commands
+#	src/.connector.h.swp
+#	src/.main.h.swp
+#	src/.rshell.cpp.swp
+#	src/connector.h.gch
+#	src/main.h.gch
+nothing added to commit but untracked files present (use "git add" to track)
+mlieu002@hammer.cs.ucr.edu$ exit
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 03:26:15 AM PST

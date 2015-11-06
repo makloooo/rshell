@@ -113,10 +113,10 @@ int main(int argc, char* argv[], char *envp[]) {
 
         // Debug printing
         
-        cout << "[DEBUG] Size of 'arguments': " << arguments.size() << endl;
+        /*cout << "[DEBUG] Size of 'arguments': " << arguments.size() << endl;
         cout << "[DEBUG] Size of 'connectors': " << connectors.size() << endl;
         cout << "[DEBUG] Contents of 'arguments': " << endl; printQueue(arguments);
-        cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);
+        cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);*/
         
 
         // Runs through both queues simutaneously
