@@ -1,9 +1,9 @@
 Script started on Fri 06 Nov 2015 06:11:24 AM PST
-mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ make
+[mlieu002@hammer rshell]$ make
 rm -rf bin
 mkdir -p bin
 g++ -Wall -Werror -ansi -pedantic ./src/rshell.cpp ./src/main.h ./src/connector.h -o ./bin/rshell
-mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+[mlieu002@hammer rshell]$ ./bin/rshell
 mlieu002@hammer.cs.ucr.edu$ ls # I'm a comment!
 bin  commented_command.script  LICENSE.md  makefile  README.md	src  tests
 mlieu002@hammer.cs.ucr.edu$ echo This gets printed! # THIS DOESNT GET PRINTED
@@ -57,7 +57,7 @@ mlieu002@hammer.cs.ucr.edu$ git status # comment; ls not even the semicolon can 
 mlieu002@hammer.cs.ucr.edu$ pwd # such is the fate of a comment
 /class/classes/mlieu002/git/rshell
 mlieu002@hammer.cs.ucr.edu$ exit
-mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ exit
+[mlieu002@hammer rshell]$ exit
 exit
 
 Script done on Fri 06 Nov 2015 06:14:36 AM PST
