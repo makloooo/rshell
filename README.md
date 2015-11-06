@@ -19,5 +19,4 @@ This shell can do the following:
 
 This shell has multiple problems:
 * If you try to echo a phrase in quotes, it will include the quotation marks as well.
-* If you attach a double connector ('||' or '&&') to the beginning of an argument, it will be read in as a separate argument.
-* If you attach any sort of connector to the beginning or end of an argument, it will be read in as part of the argument.
+* If you attach any sort of double connector ('||', '&&') to the beginning or end of an argument, it will be read in as part of the argument.
