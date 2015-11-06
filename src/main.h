@@ -19,9 +19,9 @@ using namespace std;
 int checkConnectors(char* argv) {
     // This will be returning flags.
     if (strcmp(argv, ";") == 0 || argv[strlen(argv) - 1] == ';') return 0;
-    else if (strcmp(argv, "#") == 0) return 3;
-    else if (strcmp(argv, "||") == 0) return 1;
-    else if (strcmp(argv, "&&") == 0) return 2;
+    else if (strcmp(argv, "#") == 0) return 1;
+    else if (strcmp(argv, "||") == 0) return 2;
+    else if (strcmp(argv, "&&") == 0) return 3;
     else return -1;
 }
 

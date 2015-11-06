@@ -48,6 +48,7 @@ int main(int argc, char* argv[], char *envp[]) {
             cout << "Terminated without command -- ignoring leading connector." << endl;
         }*/
 
+        cout << "[DEBUG] tokens.back(): "; printArg(tokens.back()); cout << endl;
         while (isDblConnector(tokens.back())) { // If the stupid user ended with a connector
             deque<char*> tmpCmds;
 
@@ -113,10 +114,10 @@ int main(int argc, char* argv[], char *envp[]) {
 
         // Debug printing
         
-        /*cout << "[DEBUG] Size of 'arguments': " << arguments.size() << endl;
+        cout << "[DEBUG] Size of 'arguments': " << arguments.size() << endl;
         cout << "[DEBUG] Size of 'connectors': " << connectors.size() << endl;
         cout << "[DEBUG] Contents of 'arguments': " << endl; printQueue(arguments);
-        cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);*/
+        cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);
         
 
         // Runs through both queues simutaneously
@@ -127,11 +128,16 @@ int main(int argc, char* argv[], char *envp[]) {
         while (!arguments.empty()) {
             if (!connectors.empty()) {
                 if (strcmp(connectors.front(), ";") == 0) {
-                    Semicolon single(arguments.front());
-                    single.run(); // This doesn't report an exit status.
-                    arguments.pop(); // Deallocating and getting rid of 
-                    connectors.pop(); // A clean arg is a leak-free program!
-                    exitIndep = true;
+                    if (!exitIndep) {
+                        exitIndep = true;
+                        connectors.pop();
+                    }
+                    else {
+                        Semicolon single(arguments.front());
+                        single.run(); // This doesn't report an exit status.
+                        arguments.pop(); // Deallocating and getting rid of 
+                        connectors.pop(); // A clean arg is a leak-free program!
+                    }
                 }
                 else if (strcmp(connectors.front(), "||") == 0) { 
                     if (exitIndep) {
@@ -176,7 +182,7 @@ int main(int argc, char* argv[], char *envp[]) {
             }
             else {
                 // cout << "[DEBUG] Final execution." << endl;
-                execute(arguments.front());
+                if (arguments.front() != '\0') execute(arguments.front());
                 arguments.pop();
             }
         }
