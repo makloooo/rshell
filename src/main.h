@@ -143,31 +143,31 @@ bool execute(char* args[]) {
 
     int status;
     pid_t c_pid, pid; // child_processID, processID
-    c_pid = fork(); // Forks our process and stores its ID into a variable "child id"
+    c_pid = fork(); 
+    // Forks our process and stores its ID into a variable "child id"
 
     if (strcmp(args[0], "exit") == 0) exit(0);
 
-    // First fork a process.
     if (c_pid < 0) { // If the fork doesn't take place at all => It fails
         perror("Fork failed");
         exit(1);
     }
-    else if (c_pid == 0) { // If the fork succeeds, and this is the child process
+    else if (c_pid == 0) { 
+        // If the fork succeeds, and this is the child process
         // cout << "[DEBUG] --------------------" << endl;
         // cout << "[DEBUG] I'm a child process." << endl;
         // cout << "[DEBUG] Executing '"; printArgs(args); cout << "'!" << endl;
-        // Once execvp is called, the program is overwritten, and this function never finishes. 
-        // That's why it's okay to leave that hanging there. 
         execvp(args[0], args);
         perror("execvp failed");
         exit(EXIT_FAILURE);
     }
-    else if (c_pid > 0) { // If the fork succeeds, and this is the parent process
+    else if (c_pid > 0) { 
+        // If the fork succeeds, and this is the parent process
         // cout << "[DEBUG] I'm the parent process." << endl;
         if ( (pid = wait(&status)) < 0) {
             perror("Something went wrong while waiting");
             exit(1);
-        } // Parent infinitely loops while the child carries out its duty.
+        }
         // cout << "[DEBUG] --------------------" << endl;
         // cout << "[DEBUG] Child finished its job. Whew!" << endl;
     }

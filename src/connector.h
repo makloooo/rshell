@@ -12,35 +12,40 @@ class connector {
 
             int status;
             pid_t c_pid, pid; // child_processID, processID
-            c_pid = fork(); // Forks our process and stores its ID into a variable "child id"
+            c_pid = fork(); 
+            // Forks our process and stores its ID into a variable "child id"
 
             if (strcmp(args[0], "exit") == 0) exit(0);
 
             // First fork a process.
-            if (c_pid < 0) { // If the fork doesn't take place at all => It fails
+            if (c_pid < 0) { 
+                // If the fork doesn't take place at all => It fails
                 perror("fork failed");
                 exit(EXIT_FAILURE);
             }
-            else if (c_pid == 0) { // If the fork succeeds, and this is the child process
+            else if (c_pid == 0) { 
+                // If the fork succeeds, and this is the child process
                 // cout << "[DEBUG] --------------------" << endl;
                 // cout << "[DEBUG] I'm a child process." << endl;
                 // cout << "[DEBUG] Executing "; printArgs(args); cout << endl;
-                // Once execvp is called, the program is overwritten, and this function never finishes. 
-                // That's why it's okay to leave that hanging there. 
                 execvp(args[0], args);
                 perror("execvp failed");
                 exit(EXIT_FAILURE);
             }
-            else if (c_pid > 0) { // If the fork succeeds, and this is the parent process
+            else if (c_pid > 0) { 
+                // If the fork succeeds, and this is the parent process
                 // cout << "[DEBUG] I'm the parent process." << endl;
                 if ( (pid = wait(&status)) < 0) {
                     perror("wait failed");
                     exit(EXIT_FAILURE);
-                } // Parent infinitely loops while the child carries out its duty.
+                }
                 // cout << "[DEBUG] -------------------" << endl;
-                // cout << "[DEBUG] Child finished its job with exit status " << status << '.' << endl;
+                // cout << "[DEBUG] Child finished its job with exit status " 
+                //      << status << '.' << endl;
             }
-            // cout << "[DEBUG] WIFEXITED yielded "; (WIFEXITED(status)) ? cout << "true" : cout << "false"; cout << endl;
+            // cout << "[DEBUG] WIFEXITED yielded "; 
+            // (WIFEXITED(status)) ? cout << "true" : cout << "false"; 
+            // cout << endl;
             return (status == 0); // I'M CHEATING
         }
 
@@ -94,7 +99,9 @@ class DoubleBars : public connector {
             if (!execute(cmd1)) {
                 return execute(cmd2); // And run the next command
             }
-            return true; // If cmd1 executed correctly, the if statement should not occur and just return true.
+            return true; 
+            // If cmd1 executed correctly:
+            // The if statement should not occur and just return true.
         }        
         bool run(bool exitStatus) { 
             // For subsequent runs, you're only going to hold one command;
