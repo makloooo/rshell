@@ -14,6 +14,8 @@ class connector {
             pid_t c_pid, pid; // child_processID, processID
             c_pid = fork(); // Forks our process and stores its ID into a variable "child id"
 
+            if (strcmp(args[0], "exit") == 0) exit(0);
+
             // First fork a process.
             if (c_pid < 0) { // If the fork doesn't take place at all => It fails
                 perror("fork failed");

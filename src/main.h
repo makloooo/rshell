@@ -40,6 +40,7 @@ void truncate(char* argv) {
     return;
 }
 
+
 void printArg(char* argv) {
     for (int i = 0; argv[i] != '\0'; ++i) {
         cout << argv[i];
@@ -52,6 +53,13 @@ void printArgs(char* argv[]) {
         printArg(argv[i]);
         if (argv[i+1] != '\0') cout << ' ';
     }
+}
+
+void printInfo(char* login, char host[]) {
+    printArg(login); 
+    cout << '@';
+    printArg(host);
+    return;
 }
 
 void printQueue(queue<char**> q) {
@@ -118,6 +126,8 @@ bool execute(char* args[]) {
     int status;
     pid_t c_pid, pid; // child_processID, processID
     c_pid = fork(); // Forks our process and stores its ID into a variable "child id"
+
+    if (strcmp(args[0], "exit") == 0) exit(0);
 
     // First fork a process.
     if (c_pid < 0) { // If the fork doesn't take place at all => It fails

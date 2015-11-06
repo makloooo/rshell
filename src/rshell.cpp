@@ -9,18 +9,26 @@ int main(int argc, char* argv[], char *envp[]) {
     queue<char**> arguments;
     queue<char*> connectors;
 
+    // Grabs host name
+    char* login;
+    char host[127];
 
+    login = getlogin();
+    if (gethostname(host, 127) != 0) {
+        perror("failed to gethostname");
+        exit(EXIT_FAILURE);
+    }
+   
     string command = "";
+
+    printInfo(login, host);
     cout << "$ ";
     while (getline(cin, command)) {
 
         while (command.length() == 0) {
-            cout << "& ";
+            printInfo(login, host);
+            cout << "$ ";
             getline(cin,command);
-        }
-
-        if (command == "exit") {
-            exit(0);
         }
 
         char* cstrcmd = '\0';
@@ -175,6 +183,7 @@ int main(int argc, char* argv[], char *envp[]) {
         }
 
         delete[] cstrcmd; // This deallocates the entire command string. Connectors & arguments
+        printInfo(login, host);
         cout << "$ ";
     }
 
