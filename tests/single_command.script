@@ -1,9 +1,9 @@
 Script started on Fri 06 Nov 2015 03:24:55 AM PST
-mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ make
+[mlieu002@hammer rshell]$ make
 rm -rf bin
 mkdir -p bin
 g++ -Wall -Werror -ansi -pedantic ./src/rshell.cpp ./src/main.h ./src/connector.h -o ./bin/rshell
-mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+[mlieu002@hammer rshell]$ ./bin/rshell
 mlieu002@hammer.cs.ucr.edu$ ls
 bin  LICENSE.md  makefile  README.md  single_commands  src  tests
 mlieu002@hammer.cs.ucr.edu$ ls -a
@@ -47,7 +47,7 @@ mlieu002@hammer.cs.ucr.edu$ git status
 #	src/main.h.gch
 nothing added to commit but untracked files present (use "git add" to track)
 mlieu002@hammer.cs.ucr.edu$ exit
-mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ exit
+[mlieu002@hammer rshell]$ exit
 exit
 
 Script done on Fri 06 Nov 2015 03:26:15 AM PST
