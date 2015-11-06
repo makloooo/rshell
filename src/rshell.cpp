@@ -166,7 +166,8 @@ int main(int argc, char* argv[], char *envp[]) {
                 else if (strcmp(connectors.front(), "#") == 0) {
                     execute(arguments.front());
                     connectors.pop();
-                    arguments.pop(); arguments.pop(); // Basically ignore the next arg no matter what
+                    while (!arguments.empty()) arguments.pop(); // Holy moly kills the rest of the args
+                    while (!connectors.empty()) connectors.pop(); // KILLS EVERYTHING
                 }
                 else {
                     // cout << "[DEBUG] Connector '" << connectors.front() << "' unrecognized." << endl;
@@ -180,11 +181,16 @@ int main(int argc, char* argv[], char *envp[]) {
             }
         }
 
+        // cout << "[DEBUG] Begin cleaning!" << endl;
+        while (!connectors.empty()) connectors.pop();
+        // cout << "[DEBUG] Connectors cleaned!" << endl;
+        while (!arguments.empty()) arguments.pop(); // If, for some reason, these two are not empty.
+        // cout << "[DEBUG] Arguments cleaned!" << endl;
         while (!data.empty()) {
             delete[] data.front(); // This deallocates the entire command string. Connectors & arguments
-            data.front() = '\0';
             data.pop();
         }
+        // cout << "[DEBUG] Data cleaned!" << endl;
         printInfo(login, host);
         cout << "$ ";
     }
