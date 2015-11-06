@@ -32,40 +32,39 @@ int main(int argc, char* argv[], char *envp[]) {
         }
 
         char* cstrcmd = '\0';
-        char* token = '\0';
         deque<char*> tokens;
+        queue<char*> data;
 
         cstrcmd = new char[command.size() + 1]; // This data is universal. It will be used until deallocated.
-        strcpy(cstrcmd, command.c_str());
 
-        token = strtok(cstrcmd, " ");
-        while (token != '\0') {
-            // cout << token << " Tokenized!" << endl;
-            tokens.push_back(token);
-            token = strtok('\0', " ");
-        }
+        strcpy(cstrcmd, command.c_str());
+        data.push(cstrcmd); // This is to hold locations of the data to deallocate later
+        tokens = parse(cstrcmd);
 
         // cout << "[DEBUG] Queue contents: "; printQueue(tokens);
 
-        if (isDblConnector(tokens.back())) {
+        /*if (isDblConnector(tokens.back())) {
             tokens.pop_back();
             cout << "Terminated without command -- ignoring leading connector." << endl;
-        }
-        /*
+        }*/
+
         while (isDblConnector(tokens.back())) { // If the stupid user ended with a connector
-            queue<char*> tmpCmds;
+            deque<char*> tmpCmds;
 
             cout << "> ";
             getline(cin, command);
-            copyQueue(tmpCmds, parse(command));
-            while (!tmpCmds.empty()) {
-                tokens.push(tmpCmds.front());
-                tmpCmds.pop();
-            }
 
-            cout << "[DEBUG] Queue contents: "; printQueue(tokens);
+            cstrcmd = new char[command.size() + 1];
+            strcpy(cstrcmd, command.c_str());
+            data.push(cstrcmd);
+
+            tmpCmds = parse(cstrcmd);
+            while (!tmpCmds.empty()) {
+                tokens.push_back(tmpCmds.front());
+                tmpCmds.pop_front();
+            }
+            // cout << "[DEBUG] Queue contents: "; printQueue(tokens);
         }
-        */
 
         // cout << "[DEBUG] Creating both queues..." << endl;
         int last; // There definitely has to be a better way to do this...
@@ -74,13 +73,13 @@ int main(int argc, char* argv[], char *envp[]) {
         for (int i = 0; !tokens.empty(); ++i) {
             cutEndSpaces(tokens.front());
             if (isConnector(tokens.front())) {
-                if (!isDblConnector(tokens.front())) { // Pesky semicolons being attached...
+                if (isAttached(tokens.front())) { // Pesky semicolons being attached...
                     truncate(tokens.front()); // e.g. -a; >> -a
                     // cout << "[DEBUG] Assigning cmd[" << i << "] value of '"; printArg(tokens.front()); cout << '\'' << endl;
                     cmd[n][i] = tokens.front(); // cmd[i] gets -a, contains pointer to the first character of that value, '-'
                     // cout << "[DEBUG] Assigned cmd[" << i << "] value of '"; printArg(cmd[n][i]); cout << '\'' << endl;
-                    tokens.front() = new char; // tokens.front() gets a pointer to new cString
-                    // FIXME: Find out where to correctly deallocate this
+                    tokens.front() = new char[1]; // tokens.front() gets a pointer to new cString
+                    data.push(tokens.front());
                     strcpy(tokens.front(), ";\0"); // strcpy sets its values to be ";\0"
                     ++i; // Progressing to the next value of cmd, since it was assigned in this instance
                 }
@@ -182,7 +181,11 @@ int main(int argc, char* argv[], char *envp[]) {
             }
         }
 
-        delete[] cstrcmd; // This deallocates the entire command string. Connectors & arguments
+        while (!data.empty()) {
+            delete[] data.front(); // This deallocates the entire command string. Connectors & arguments
+            data.front() = '\0';
+            data.pop();
+        }
         printInfo(login, host);
         cout << "$ ";
     }

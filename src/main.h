@@ -18,10 +18,10 @@ using namespace std;
 
 int checkConnectors(char* argv) {
     // This will be returning flags.
-    if (argv[strlen(argv) - 1] == ';') return 0;
+    if (strcmp(argv, ";") == 0) return 0;
+    else if (strcmp(argv, "#") == 0) return 3;
     else if (strcmp(argv, "||") == 0) return 1;
     else if (strcmp(argv, "&&") == 0) return 2;
-    else if (strcmp(argv, "#") == 0) return 3;
     else return -1;
 }
 
@@ -31,7 +31,12 @@ bool isConnector(char* argv) {
 }
 
 bool isDblConnector(char* argv) {
-    if (checkConnectors(argv)> 0) return true;
+    if (checkConnectors(argv) > 1) return true;
+    return false;
+}
+
+bool isAttached(char* argv) {
+    if (argv[strlen(argv - 1)] == ';') return true;
     return false;
 }
 
@@ -40,6 +45,18 @@ void truncate(char* argv) {
     return;
 }
 
+deque<char*> parse(char cstrcmd[]) {
+    char* token;
+    deque<char*> tokens;
+
+    token = strtok(cstrcmd, " ");
+    while (token != '\0') {
+        // cout << token << " Tokenized!" << endl;
+        tokens.push_back(token);
+        token = strtok('\0', " ");
+    }
+    return tokens;
+}
 
 void printArg(char* argv) {
     for (int i = 0; argv[i] != '\0'; ++i) {
