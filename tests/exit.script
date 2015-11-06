@@ -1,0 +1,28 @@
+Script started on Fri 06 Nov 2015 05:57:07 AM PST
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ make
+rm -rf bin
+mkdir -p bin
+g++ -Wall -Werror -ansi -pedantic ./src/rshell.cpp ./src/main.h ./src/connector.h -o ./bin/rshell
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ exit
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ exit && ls
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ ls || exit; mkdir a && rmdir a; exit && exit
+bin  exit.script  LICENSE.md  makefile	README.md  src	test  tests
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ ls; exit; mkdir trash
+bin  exit.script  LICENSE.md  makefile	README.md  src	test  tests
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ rmdir test; # exit
+rmdir: failed to remove `test': Not a directory
+mlieu002@hammer.cs.ucr.edu$ ls; exit || exit || exit && exit
+bin  exit.script  LICENSE.md  makefile	README.md  src	test  tests
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ true || exit && rm test || exit; exit; ls
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ls
+bin exit.script  LICENSE.md  makefile  README.md src tests
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 06:00:24 AM PST

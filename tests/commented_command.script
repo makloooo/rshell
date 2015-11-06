@@ -1,0 +1,63 @@
+Script started on Fri 06 Nov 2015 06:11:24 AM PST
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ make
+rm -rf bin
+mkdir -p bin
+g++ -Wall -Werror -ansi -pedantic ./src/rshell.cpp ./src/main.h ./src/connector.h -o ./bin/rshell
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ ls # I'm a comment!
+bin  commented_command.script  LICENSE.md  makefile  README.md	src  tests
+mlieu002@hammer.cs.ucr.edu$ echo This gets printed! # THIS DOESNT GET PRINTED
+This gets printed!
+mlieu002@hammer.cs.ucr.edu$ echo risky # exit
+risky
+mlieu002@hammer.cs.ucr.edu$ echo anything after the comment is irrelevant # asdfasdfsadf ls -a
+anything after the comment is irrelevant
+mlieu002@hammer.cs.ucr.edu$ cal # CENDARS FOR DAYS ls && asdf || exit
+    November 2015   
+Su Mo Tu We Th Fr Sa
+ 1  2  3  4  5  6  7
+ 8  9 10 11 12 13 14
+15 16 17 18 19 20 21
+22 23 24 25 26 27 28
+29 30
+
+mlieu002@hammer.cs.ucr.edu$ ls; la ; ls # even connectors are ignored && ls
+bin  commented_command.script  LICENSE.md  makefile  README.md	src  tests
+execvp failed: No such file or directory
+bin  commented_command.script  LICENSE.md  makefile  README.md	src  tests
+mlieu002@hammer.cs.ucr.edu$ echo this is relevant # while anything can go here without completely messing with args
+this is relevant
+mlieu002@hammer.cs.ucr.edu$ git status # comment; ls not even the semicolon can save us now
+# On branch exec
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   src/rshell.cpp
+#
+# Changes not staged for commit:
+#   (use "git add/rm <file>..." to update what will be committed)
+#   (use "git checkout -- <file>..." to discard changes in working directory)
+#
+#	modified:   src/rshell.cpp
+#	deleted:    tests/single_commands
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	README.md.swp
+#	bin/
+#	commented_command.script
+#	src/.connector.h.swp
+#	src/.main.h.swp
+#	src/.rshell.cpp.swp
+#	src/connector.h.gch
+#	src/main.h.gch
+#	tests/exit.script
+#	tests/single_command.script
+mlieu002@hammer.cs.ucr.edu$ pwd # such is the fate of a comment
+/class/classes/mlieu002/git/rshell
+mlieu002@hammer.cs.ucr.edu$ exit
+mlieu002@hammer:~/git/rshell[mlieu002@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 06:14:36 AM PST
