@@ -1,0 +1,47 @@
+Script started on Fri 06 Nov 2015 06:51:41 AM PST
+[mlieu002@hammer rshell]$ make
+rm -rf bin
+mkdir -p bin
+g++ -Wall -Werror -ansi -pedantic ./src/rshell.cpp ./src/main.h ./src/connector.h -o ./bin/rshell
+[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ ls && ls
+bin  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+bin  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+mlieu002@hammer.cs.ucr.edu$ ls && mkdir a && ls -a && rmdir a && ls
+bin  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+.  ..  a  bin  .git  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+bin  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+mlieu002@hammer.cs.ucr.edu$ echo hello && echo world; echo hi && la || ls
+hello
+world
+hi
+execvp failed: No such file or directory
+bin  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+mlieu002@hammer.cs.ucr.edu$ pwd || exit && echo hello!!; pwd;|lse-a;
+/class/classes/mlieu002/git/rshell
+hello!!
+/class/classes/mlieu002/git/rshell
+.  ..  bin  .git  LICENSE.md  makefile	multi_command.script  README.md	 src  tests
+mlieu002@hammer.cs.ucr.edu$ echo hello &&
+> echo world!||
+hello
+world!
+mlieu002@hammer.cs.ucr.edu$ echo hello world! ||
+> echo goodbye world! &&
+> echo this isn't goodbye!
+hello world!
+this isn't goodbye!
+mlieu002@hammer.cs.ucr.edu$ echo veeeeeery long whitespace!	      && echo	       echo ooooo spooky ||
+> ls &&
+> echo halloween isnalreadechoehalloween is already over!! ||
+> mkdir halloween
+veeeeeery long whitespace!
+ooooo spooky
+halloween is already over!!
+mlieu002@hammer.cs.ucr.edu$ ls
+bin  LICENSE.md	 makefile  multi_command.script	 README.md  src	 tests
+mlieu002@hammer.cs.ucr.edu$ exit
+[mlieu002@hammer rshell]$ exit
+exit
+
+Script done on Fri 06 Nov 2015 06:56:27 AM PST
