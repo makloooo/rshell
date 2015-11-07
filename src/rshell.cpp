@@ -41,9 +41,8 @@ int main(int argc, char* argv[], char *envp[]) {
         strcpy(cstrcmd, command.c_str());
         data.push(cstrcmd); 
         // This is to hold locations of the data to deallocate later
-        //
+        
         tokens = parse(cstrcmd);
-
 
         /*if (isDblConnector(tokens.back())) {
             tokens.pop_back();
