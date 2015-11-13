@@ -1,44 +1,4 @@
-#ifndef MAIN_H
-#define MAIN_H
-
-#include <iostream>
-#include <cstdlib>
-#include <string>
-#include <vector>
-#include <stdio.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <queue>
-#include <deque>
-
-using namespace std;
-
-int checkConnectors(char* argv) {
-    // This will be returning flags.
-    if (strcmp(argv, ";") == 0 || argv[strlen(argv) - 1] == ';') return 0;
-    else if (strcmp(argv, "#") == 0) return 1;
-    else if (strcmp(argv, "||") == 0) return 2;
-    else if (strcmp(argv, "&&") == 0) return 3;
-    else return -1;
-}
-
-bool isConnector(char* argv) {
-    if (checkConnectors(argv) >= 0) return true;
-    return false;
-}
-
-bool isDblConnector(char* argv) {
-    if (checkConnectors(argv) > 1) return true;
-    return false;
-}
-
-bool isAttached(char* argv) {
-    if (strlen(argv) > 1 && (argv[strlen(argv) - 1] == ';')) return true;
-    return false;
-}
+#include "helper.h"
 
 void truncate(char* argv) {
     argv[strlen(argv) - 1] = '\0';
@@ -108,20 +68,6 @@ void printQueue(queue<char*> q) {
     return;
 }
 
-void cleanArg(char cTokens[]) {
-    for (int i = 0; cTokens[i] != '\0'; ++i) {
-        delete (cTokens + i);
-    }
-    return;
-}
-
-void cleanArgs(char* cTokens[]) {
-    for (int i = 0; cTokens[i] != '\0'; ++i) {
-        cleanArg(cTokens[i]);
-    }
-    return;
-}
-
 void setNull(char* cTokens[]) {
     for (int i = 0; cTokens[i] != '\0'; ++i) {
         for (int n = 0; cTokens[n] != '\0'; ++n) {
@@ -175,4 +121,75 @@ bool execute(char* args[]) {
     return (status == 0);
 }
 
-#endif
+void runCommands(queue<char**> arguments, queue<char*> connectors) {
+    // Runs through both queues simutaneously
+    // After the first run, logic is checked parallel to arguments run
+    bool exitStatus;
+    bool exitIndep = true; // There's probably a way better way to do this.
+    char** tmpArg;
+    while (!arguments.empty()) {
+        if (!connectors.empty()) {
+            if (strcmp(connectors.front(), ";") == 0) {
+                if (!exitIndep) {
+                    exitIndep = true;
+                    connectors.pop();
+                }
+                else {
+                    Semicolon single(arguments.front());
+                    single.run(); // This doesn't report an exit status.
+                    arguments.pop(); // Deallocating and getting rid of 
+                    connectors.pop(); // A clean arg is a leak-free program!
+                }
+            }
+            else if (strcmp(connectors.front(), "||") == 0) { 
+                if (exitIndep) {
+                    tmpArg = arguments.front();
+                    arguments.pop();
+                    DoubleBars doubl(tmpArg, arguments.front());
+                    exitStatus = doubl.run();
+                }
+                else {
+                    DoubleBars doubl(arguments.front());
+                    exitStatus = doubl.run(exitStatus);
+                }
+                arguments.pop();
+                connectors.pop();
+                exitIndep = false;
+            }
+            else if (strcmp(connectors.front(), "&&") == 0) { 
+                if (exitIndep) {
+                    tmpArg = arguments.front();
+                    arguments.pop(); 
+                    // This just gets rid of the pointer
+                    // not the actual value
+                    Ampersand doubl(tmpArg, arguments.front());
+                    exitStatus = doubl.run();
+                }
+                else {
+                    Ampersand doubl(arguments.front()); 
+                    // Everytime arguments are run from a class
+                    // the commands get destructed themselves
+                    exitStatus = doubl.run(exitStatus);
+                }
+                arguments.pop();
+                connectors.pop();
+                exitIndep = false;
+            }
+            else if (strcmp(connectors.front(), "#") == 0) {
+                execute(arguments.front());
+                connectors.pop();
+                while (!arguments.empty()) arguments.pop(); 
+                while (!connectors.empty()) connectors.pop();
+                // This clause completely kills the rest of everything.
+            }
+            else {
+                arguments.pop();
+            }
+        }
+        else {
+            if (arguments.front() != '\0') execute(arguments.front());
+            arguments.pop();
+        }
+    }
+    return;
+}

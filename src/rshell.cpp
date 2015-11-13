@@ -1,5 +1,8 @@
+#include "include.h"
+
+#include "helper.h"
+#include "check.h"
 #include "connector.h"
-#include "main.h"
 
 int main(int argc, char* argv[], char *envp[]) {
    
@@ -106,75 +109,7 @@ int main(int argc, char* argv[], char *envp[]) {
             arguments.push(cmd[n]);
         }
 
-        // Runs through both queues simutaneously
-        // After the first run, logic is checked parallel to arguments run
-        bool exitStatus;
-        bool exitIndep = true; // There's probably a way better way to do this.
-        char** tmpArg;
-        while (!arguments.empty()) {
-            if (!connectors.empty()) {
-                if (strcmp(connectors.front(), ";") == 0) {
-                    if (!exitIndep) {
-                        exitIndep = true;
-                        connectors.pop();
-                    }
-                    else {
-                        Semicolon single(arguments.front());
-                        single.run(); // This doesn't report an exit status.
-                        arguments.pop(); // Deallocating and getting rid of 
-                        connectors.pop(); // A clean arg is a leak-free program!
-                    }
-                }
-                else if (strcmp(connectors.front(), "||") == 0) { 
-                    if (exitIndep) {
-                        tmpArg = arguments.front();
-                        arguments.pop();
-                        DoubleBars doubl(tmpArg, arguments.front());
-                        exitStatus = doubl.run();
-                    }
-                    else {
-                        DoubleBars doubl(arguments.front());
-                        exitStatus = doubl.run(exitStatus);
-                    }
-                    arguments.pop();
-                    connectors.pop();
-                    exitIndep = false;
-                }
-                else if (strcmp(connectors.front(), "&&") == 0) { 
-                    if (exitIndep) {
-                        tmpArg = arguments.front();
-                        arguments.pop(); 
-                        // This just gets rid of the pointer
-                        // not the actual value
-                        Ampersand doubl(tmpArg, arguments.front());
-                        exitStatus = doubl.run();
-                    }
-                    else {
-                        Ampersand doubl(arguments.front()); 
-                        // Everytime arguments are run from a class
-                        // the commands get destructed themselves
-                        exitStatus = doubl.run(exitStatus);
-                    }
-                    arguments.pop();
-                    connectors.pop();
-                    exitIndep = false;
-                }
-                else if (strcmp(connectors.front(), "#") == 0) {
-                    execute(arguments.front());
-                    connectors.pop();
-                    while (!arguments.empty()) arguments.pop(); 
-                    while (!connectors.empty()) connectors.pop();
-                    // This clause completely kills the rest of everything.
-                }
-                else {
-                    arguments.pop();
-                }
-            }
-            else {
-                if (arguments.front() != '\0') execute(arguments.front());
-                arguments.pop();
-            }
-        }
+        runCommands(arguments, connectors);
 
         while (!connectors.empty()) connectors.pop();
         while (!arguments.empty()) arguments.pop(); 
