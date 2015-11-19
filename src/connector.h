@@ -2,43 +2,81 @@
 #define CONNECTOR_H
 
 #include "include.h"
-#include "helper.h"
 
 class Connector {
     protected:
-        char* cmd1[256]; // Holds commands
-        char* cmd2[256];
+        char* command[256]; // Holds arguments
+        Connector* left;
+        Connector* right;
         
         bool execute(char* args[]);
     public:
-        virtual bool run() = 0;
-        virtual bool run(bool exitStatus) = 0;
+        Connector();
+        Connector(char* argv[]);
+        virtual bool run();
+        void setLeft(Connector* left);
+        void setRight(Connector* right);
+        Connector* getLeft();
+        Connector* getRight();
+        void destroyBranch(Connector* node);
+        char** getCmd();
+        virtual void identify();
 };
 
 class Ampersand : public Connector {
     public:
-        Ampersand(char* first[]);
-        Ampersand(char* first[], char* second[]);
+        Ampersand();
+        Ampersand(Connector* l, Connector* r);
         ~Ampersand();
-        bool run();        
-        bool run(bool exitStatus);
+        bool run();
+        
+        void identify();
 };
 
 class DoubleBars : public Connector {
     public:
-        DoubleBars(char* first[]);
-        DoubleBars(char* first[], char* second[]);
+        DoubleBars();
+        DoubleBars(Connector* l, Connector* r);
         ~DoubleBars();        
         bool run();
-        bool run(bool exitStatus);
+
+        void identify();
 };
 
 class Semicolon : public Connector {
     public:
-        Semicolon(char* first[]);
+        Semicolon();
+        Semicolon(Connector* l, Connector* r);
         ~Semicolon();
         bool run();
-        bool run(bool exitStatus);
+
+        void identify();
 };
+
+class Hash : public Connector {
+    public:
+        Hash();
+        Hash(Connector* l, Connector* r);
+        ~Hash();
+        bool run();
+
+        void identify();
+};
+
+/*
+class Bracket : public Connector {
+    public:
+        Bracket(char* first[]);
+        ~Bracket();
+        bool run();
+};
+*/
+class ConnectorFactory {
+    public:
+        Connector* createBranch(queue<char**>&, queue<char*>&);
+        Connector* createConnector(int);
+};
+
+#include "helper.h"
 
 #endif

@@ -1,4 +1,4 @@
-FLAGS = -Wall -Werror -ansi -pedantic
+FLAGS = -g -Wall -Werror -ansi -pedantic
 
 all: 
 	rm -rfv bin

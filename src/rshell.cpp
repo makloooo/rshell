@@ -71,6 +71,9 @@ int main(int argc, char* argv[], char *envp[]) {
             }
         }
 
+        printLine(40);
+
+        // Creating the two argument and connector queues
         int last; // There definitely has to be a better way to do this.
         char* cmd[128][256]; 
         // cmd is a list of pointers to the beginning of each token of the 
@@ -109,7 +112,17 @@ int main(int argc, char* argv[], char *envp[]) {
             arguments.push(cmd[n]);
         }
 
-        runCommands(arguments, connectors);
+        // Debug printing:
+        cout << "[DEBUG] Contents of 'arguments': " << endl; printQueue(arguments);
+        cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);
+
+        // How to build a tree out of two queues?
+        Connector* head = NULL;
+        head = buildTree(arguments, connectors);
+        cout << "[DEBUG] Tree built successfully... possibly!" << endl;
+        cout << "[DEBUG] head speaking: "; head->identify();
+        printLine(20); printTree(head); printLine(20);
+        head->run();
 
         while (!connectors.empty()) connectors.pop();
         while (!arguments.empty()) arguments.pop(); 
@@ -119,6 +132,8 @@ int main(int argc, char* argv[], char *envp[]) {
             // This deallocates the entire command string.
             data.pop();
         }
+        head->destroyBranch(head);
+        printLine(40);
         printInfo(login, host);
         cout << "$ ";
     }
