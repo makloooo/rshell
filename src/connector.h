@@ -13,6 +13,7 @@ class Connector {
     public:
         Connector();
         Connector(char* argv[]);
+        virtual ~Connector();
         virtual bool run();
         void setLeft(Connector* left);
         void setRight(Connector* right);
@@ -73,7 +74,7 @@ class Bracket : public Connector {
 */
 class ConnectorFactory {
     public:
-        Connector* createBranch(queue<char**>&, queue<char*>&);
+        Connector* createBranch(list<char**>&, list<char*>&);
         Connector* createConnector(int);
 };
 

@@ -16,6 +16,8 @@ Connector::Connector(char* argv[]) {
     right = NULL;
 }
 
+Connector::~Connector() {}
+
 bool Connector::execute(char* args[]) {
 
     int status;
@@ -233,13 +235,13 @@ bool Bracket::run(bool exitStatus) {
 End definitions for 'Bracket' */
 
 /* Begin definitions for 'ConnectorFactory' */
-Connector* ConnectorFactory::createBranch(queue<char**>& args, queue<char*>& cons) {
+Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons) {
     
     // This is almost the same algorithm as BuildTree()
     // If has more right branches, build via recursion.
 
     printLine(20);
-    cout << "[DEBUG] Creating new branch." << endl;
+    cout << "[DEBUG] Creating new Sub-Tree." << endl;
 
     Connector* subHead = NULL;
     Connector* left = NULL;
@@ -249,25 +251,33 @@ Connector* ConnectorFactory::createBranch(queue<char**>& args, queue<char*>& con
 
     if (hasStartParenthesis(args.front()[0])) {
         left = new Connector(args.front());
-        args.pop();
+        args.pop_front();
         cout << "[DEBUG] left: "; left->identify();
         for (int i = 0; !args.empty() && !hasEndParenthesis(args.front()); ++i) { // Input should not allow infinite loop here
             right = factory.createBranch(args, cons); 
-            args.pop();
             subHead = factory.createConnector(checkConnectors(cons.front()));
-            cons.pop();
+            cons.pop_front();
             subHead->setLeft(left);
             subHead->setRight(right);
             cout << "[DEBUG] Statement: left = subHead" << endl;
             left = subHead;
             cout << "[DEBUG] left: "; left->identify();
         }
+        cout << "[DEBUG] args.front() is terminated by ')'" << endl;
+        right = factory.createBranch(args, cons);
+        subHead = factory.createConnector(checkConnectors(cons.front()));
+        cons.pop_front();
+        subHead->setLeft(left);
+        subHead->setRight(right);
+        cout << "[DEBUG] Statement: left = subHead" << endl;
+        left = subHead;
+        cout << "[DEBUG] left: "; left->identify();
     }
     else {
         cout << "[DEBUG] Doesn't have precedence.\n[DEBUG] Creating right leaf." << endl;
         subHead = new Connector(args.front());
         cout << "[DEBUG] Right leaf holds "; printArgs(subHead->getCmd()); cout << endl;
-        args.pop();
+        args.pop_front();
     }
 
     printLine(20);

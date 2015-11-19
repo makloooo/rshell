@@ -11,9 +11,9 @@ void trim(char*& argv) {
     return;
 }
 
-deque<char*> parse(char cstrcmd[]) {
+list<char*> parse(char cstrcmd[]) {
     char* token;
-    deque<char*> tokens;
+    list<char*> tokens;
 
     token = strtok(cstrcmd, " ");
     while (token != '\0') {
@@ -46,29 +46,20 @@ void printInfo(char* login, char host[]) {
     return;
 }
 
-void printQueue(queue<char**> q) {
+void printQueue(list<char**> q) {
     for (int i = 0; !q.empty(); ++i) {
         cout << "[DEBUG] Argument #" << i << ": ";
         printArgs(q.front());
-        q.pop();
+        q.pop_front();
         cout << endl;
     }
     return;
 }
 
-void printQueue(deque<char*> q) {
+void printQueue(list<char*> q) {
     while (!q.empty()) {
         cout << q.front() << ' ';
         q.pop_front();
-    }
-    cout << endl;
-    return;
-}
-
-void printQueue(queue<char*> q) {
-    while (!q.empty()) {
-        cout << q.front() << ' ';
-        q.pop();
     }
     cout << endl;
     return;
@@ -250,33 +241,32 @@ void runCommands(queue<char**> arguments, queue<char*> connectors) {
 }
 */
 
-Connector* buildTree(queue<char**>& args, queue<char*>& cons) {
+Connector* buildTree(list<char**>& args, list<char*>& cons) {
     // Returns the head of the tree.
     // Allocated data here can be deleted during cleanup via preorder deletion.
     
     printLine(30);
 
-    cout << "[DEBUG] Throwing "; printArgs(args.front()); cout << " into leftCmd." << endl;
-    Connector* leftCmd = new Connector(args.front());
-    args.pop(); // May lose address here, but is stored in new connector.
-
-    if (leftCmd != NULL) cout << "[DEBUG] leftCmd holds "; printArgs(leftCmd->getCmd()); cout << endl;
+    ConnectorFactory factory;
+    // cout << "[DEBUG] Throwing "; printArgs(args.front()); cout << " into leftCmd." << endl;
+    cout << "[DEBUG] Building left node branch." << endl;
+    Connector* leftCmd = factory.createBranch(args, cons); 
+    cout << "[DEBUG] Left node Subtree Built." << endl;
+    // if (leftCmd != NULL) cout << "[DEBUG] leftCmd holds "; printArgs(leftCmd->getCmd()); cout << endl;
     if (args.empty()) {
-        cout << "[DEBUG] args queue held one element only, returning..." << endl;
+        cout << "[DEBUG] args list held one element only, returning..." << endl;
         return leftCmd;
     }
 
     Connector* rightCmd = NULL; 
     Connector* currHead = NULL;
     
-    ConnectorFactory factory;
-
     while (!cons.empty()) {
         while (!args.empty()) {
 
             if (checkConnectors(cons.front()) == 1) { // If is hash, EVACUATE.
-                while (!args.empty()) args.pop();
-                while (!cons.empty()) cons.pop();
+                while (!args.empty()) args.pop_front();
+                while (!cons.empty()) cons.pop_front();
                 break;
             }
 
@@ -284,14 +274,14 @@ Connector* buildTree(queue<char**>& args, queue<char*>& cons) {
             cout << "[DEBUG] Branch created." << endl;
             currHead = factory.createConnector(checkConnectors(cons.front()));
             cout << "[DEBUG] currHead speaking: "; currHead->identify();
-            cons.pop();
+            cons.pop_front();
             currHead->setLeft(leftCmd);
             currHead->setRight(rightCmd);
             cout << "[DEBUG] Statement: leftCmd = currHead" << endl;
             leftCmd = currHead; // Sets left leaf to be current head.
             cout << "[DEBUG] leftCmd: "; leftCmd->identify();
         }
-        if (args.empty() && !cons.empty()) cons.pop();
+        if (args.empty() && !cons.empty()) cons.pop_front();
     }
    
     printLine(30);
