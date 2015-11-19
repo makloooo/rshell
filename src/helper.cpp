@@ -269,12 +269,13 @@ Connector* buildTree(list<char**>& args, list<char*>& cons) {
                 while (!cons.empty()) cons.pop_front();
                 break;
             }
-
-            rightCmd = factory.createBranch(args, cons); // This is going to handle precedence.
-            cout << "[DEBUG] Branch created." << endl;
             currHead = factory.createConnector(checkConnectors(cons.front()));
             cout << "[DEBUG] currHead speaking: "; currHead->identify();
             cons.pop_front();
+
+            rightCmd = factory.createBranch(args, cons); // This is going to handle precedence.
+            cout << "[DEBUG] Branch created." << endl;
+
             currHead->setLeft(leftCmd);
             currHead->setRight(rightCmd);
             cout << "[DEBUG] Statement: leftCmd = currHead" << endl;

@@ -80,6 +80,14 @@ Connector* Connector::getRight() {
     return right;
 }
 
+bool Connector::hasLeft() {
+    return (left != NULL);
+}
+
+bool Connector::hasRight() {
+    return (right != NULL);
+}
+
 void Connector::destroyBranch(Connector* node) {
     // You should be passing in the right branch head
     // Preorder deletion
@@ -175,8 +183,10 @@ Semicolon::~Semicolon() {
 
 bool Semicolon::run() {
     cout << "[DEBUG] Running my commands! By the way, "; this->identify();
-    left->run();
-    return right->run(); // Should always run the next command.
+    bool success = false;
+    if (hasLeft()) success = left->run();
+    if (hasRight()) return right->run(); // Should always run the next command.
+    return success;
 }
 
 void Semicolon::identify() {
@@ -250,11 +260,24 @@ Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons)
     ConnectorFactory factory;
 
     if (hasStartParenthesis(args.front()[0])) {
+        hasEndParenthesis(args.front());
         left = new Connector(args.front());
         args.pop_front();
         cout << "[DEBUG] left: "; left->identify();
         for (int i = 0; !args.empty() && !hasEndParenthesis(args.front()); ++i) { // Input should not allow infinite loop here
+            subHead = factory.createConnector(checkConnectors(cons.front()));
+            cons.pop_front();
             right = factory.createBranch(args, cons); 
+            subHead->setLeft(left);
+            subHead->setRight(right);
+            cout << "[DEBUG] Statement: left = subHead" << endl;
+            left = subHead;
+            cout << "[DEBUG] left: "; left->identify();
+        }
+        cout << "[DEBUG] args.front() is terminated by ')'" << endl;
+        if (!args.empty()) {
+            cout << "[DEBUG] Attaching argument to right leaf." << endl;
+            right = factory.createBranch(args, cons);
             subHead = factory.createConnector(checkConnectors(cons.front()));
             cons.pop_front();
             subHead->setLeft(left);
@@ -263,15 +286,10 @@ Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons)
             left = subHead;
             cout << "[DEBUG] left: "; left->identify();
         }
-        cout << "[DEBUG] args.front() is terminated by ')'" << endl;
-        right = factory.createBranch(args, cons);
-        subHead = factory.createConnector(checkConnectors(cons.front()));
-        cons.pop_front();
-        subHead->setLeft(left);
-        subHead->setRight(right);
-        cout << "[DEBUG] Statement: left = subHead" << endl;
-        left = subHead;
-        cout << "[DEBUG] left: "; left->identify();
+        else {
+            cout << "[DEBUG] No argument to attach to right node - remaining NULL." << endl;
+            subHead = left;
+        }
     }
     else {
         cout << "[DEBUG] Doesn't have precedence.\n[DEBUG] Creating right leaf." << endl;

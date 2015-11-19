@@ -19,6 +19,8 @@ class Connector {
         void setRight(Connector* right);
         Connector* getLeft();
         Connector* getRight();
+        bool hasLeft();
+        bool hasRight();
         void destroyBranch(Connector* node);
         char** getCmd();
         virtual void identify();
