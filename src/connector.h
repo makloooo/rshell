@@ -74,6 +74,7 @@ class Bracket : public Connector {
         bool run();
 };
 */
+
 class ConnectorFactory {
     public:
         Connector* createBranch(list<char**>&, list<char*>&);

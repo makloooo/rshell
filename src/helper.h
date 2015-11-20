@@ -17,9 +17,7 @@ void printQueue(list<char*>);
 void printLine(int);
 void setNull(char*);
 void cutEndSpaces(char*);
-// bool execute(char* args[]);
-// void runCommands(queue<char**> arguments, queue<char*> connectors);
-bool test(char*);
+bool test(char**);
 Connector* buildTree(list<char**>&, list<char*>&);
 void printTree(Connector*);
 

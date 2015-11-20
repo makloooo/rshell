@@ -88,158 +88,34 @@ void cutEndSpaces(char* cstr) {
     return;
 }
 
-/*
-bool execute(char* args[]) {
-
-    if (strcmp(args[0], "exit") == 0) exit(0);
-    else if (strcmp(args[0], "test") == 0) test(args[]);
-
-    int status;
-    pid_t c_pid, pid; // child_processID, processID
-    c_pid = fork(); 
-    // Forks our process and stores its ID into a variable "child id"
-
-    if (c_pid < 0) { // If the fork doesn't take place at all => It fails
-        perror("Fork failed");
-        exit(1);
-    }
-    else if (c_pid == 0) { 
-        // If the fork succeeds, and this is the child process
-        cout << "[DEBUG] --------------------" << endl;
-        cout << "[DEBUG] I'm a child process." << endl;
-        cout << "[DEBUG] Executing '"; printArgs(args); cout << "'!" << endl;
-        execvp(args[0], args);
-        perror("execvp failed");
-        exit(EXIT_FAILURE);
-    }
-    else if (c_pid > 0) { 
-        // If the fork succeeds, and this is the parent process
-        cout << "[DEBUG] I'm the parent process." << endl;
-        if ( (pid = wait(&status)) < 0) {
-            perror("Something went wrong while waiting");
-            exit(1);
-        }
-        cout << "[DEBUG] --------------------" << endl;
-        cout << "[DEBUG] Child finished its job. Whew!" << endl;
-    }
-    // This should only be run if the command is valid.
-    return (status == 0);
-}
-*/
-
 bool test(char* argv[]) {
 
-    int status;
-    pid_t c_pid;
-    pid_t pid; // child_processID, processID
-    c_pid = fork(); 
     // Forks our process and stores its ID into a variable "child id"
     
-    if (c_pid < 0) { // If the fork doesn't take place at all => It fails
-        perror("Fork failed");
-        exit(1);
-    }
-    else if (c_pid == 0) { 
-        // If the fork succeeds, and this is the child process
-        cout << "[DEBUG] --------------------" << endl;
-        cout << "[DEBUG] I'm a child process." << endl;
-        cout << "[DEBUG] Statting '"; printArgs(argv); cout << "'!" << endl;
-        //stat(argv[0], argv);
-        perror("stat failed");
-        exit(EXIT_FAILURE);
-    }
-    else if (c_pid > 0) { 
-        // If the fork succeeds, and this is the parent process
-        cout << "[DEBUG] I'm the parent process." << endl;
-        if ( (pid = wait(&status)) < 0) {
-            perror("Something went wrong while waiting");
-            exit(1);
-        }
-        cout << "[DEBUG] -------------------" << endl;
-        cout << "[DEBUG] Child finished its job with exit status " 
-             << status << '.' << endl;
-    }
-    cout << "[DEBUG] WIFEXITED yielded "; 
-    (WIFEXITED(status)) ? cout << "true" : cout << "false"; 
-    cout << endl;
-    // This should only be run if the command is valid.
-    return (status == 0);
-}
+    printLine(20);
 
-/*
-void runCommands(queue<char**> arguments, queue<char*> connectors) {
-    // Runs through both queues simutaneously
-    // After the first run, logic is checked parallel to arguments run
-    bool exitStatus;
-    bool exitIndep = true; // There's probably a way better way to do this.
-    char** tmpArg;
-    while (!arguments.empty()) {
-        if (!connectors.empty()) {
-            if (strcmp(connectors.front(), ";") == 0) {
-                if (!exitIndep) {
-                    exitIndep = true;
-                    connectors.pop();
-                }
-                else {
-                    Semicolon single(arguments.front());
-                    single.run(); // This doesn't report an exit status.
-                    arguments.pop(); // Deallocating and getting rid of 
-                    connectors.pop(); // A clean arg is a leak-free program!
-                }
-            }
-            else if (strcmp(connectors.front(), "||") == 0) { 
-                if (exitIndep) {
-                    tmpArg = arguments.front();
-                    arguments.pop();
-                    DoubleBars doubl(tmpArg, arguments.front());
-                    exitStatus = doubl.run();
-                }
-                else {
-                    DoubleBars doubl(arguments.front());
-                    exitStatus = doubl.run(exitStatus);
-                }
-                arguments.pop();
-                connectors.pop();
-                exitIndep = false;
-            }
-            else if (strcmp(connectors.front(), "&&") == 0) { 
-                if (exitIndep) {
-                    tmpArg = arguments.front();
-                    arguments.pop(); 
-                    // This just gets rid of the pointer
-                    // not the actual value
-                    Ampersand doubl(tmpArg, arguments.front());
-                    exitStatus = doubl.run();
-                }
-                else {
-                    Ampersand doubl(arguments.front()); 
-                    // Everytime arguments are run from a class
-                    // the commands get destructed themselves
-                    exitStatus = doubl.run(exitStatus);
-                }
-                arguments.pop();
-                connectors.pop();
-                exitIndep = false;
-            }
-            else if (strcmp(connectors.front(), "#") == 0) {
-                execute(arguments.front());
-                connectors.pop();
-                while (!arguments.empty()) arguments.pop(); 
-                while (!connectors.empty()) connectors.pop();
-                // This clause completely kills the rest of everything.
-            }
+    struct stat fileStat;
+
+    cout << "[DEBUG] Statting "; printArgs(argv); cout << "!" << endl;
+    if (argv[1][0] == '-') { // If this is a flag
+        cout << "[DEBUG] Flag detected!" << endl;
+        if (stat(argv[2], &fileStat) == 0) {
+            if (argv[1][1] == 'e') return true;
+            else if (argv[1][1] == 'f') return S_ISREG(fileStat.st_mode);
+            else if (argv[1][1] == 'd') return S_ISDIR(fileStat.st_mode);
             else {
-                arguments.pop();
+                cout << "test failed: invalid flag passed in\n";
+                return false;
             }
         }
-        else {
-            if (arguments.front() != '\0') execute(arguments.front());
-            arguments.pop();
-        }
+        else return false;
     }
-    return;
+    cout << "[DEBUG] No flag detected." << endl;
+
+    printLine(20);
+
+    return (stat(argv[1], &fileStat) == 0); 
 }
-*/
 
 Connector* buildTree(list<char**>& args, list<char*>& cons) {
     // Returns the head of the tree.

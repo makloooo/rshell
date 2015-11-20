@@ -20,12 +20,18 @@ Connector::~Connector() {}
 
 bool Connector::execute(char* args[]) {
 
+    if (strcmp(args[0], "exit") == 0) exit(0);
+    else if (strcmp(args[0], "test") == 0) {
+        // return test(args);
+        bool success = test(args);
+        cout << "[DEBUG] Test yielded "; (success) ? cout << "true" : cout << "false"; cout << endl;
+        return success;
+    }
+
     int status;
     pid_t c_pid, pid; // child_processID, processID
     c_pid = fork(); 
     // Forks our process and stores its ID into a variable "child id"
-
-    if (strcmp(args[0], "exit") == 0) exit(0);
 
     // First fork a process.
     if (c_pid < 0) { 
@@ -222,7 +228,7 @@ void Hash::identify() {
 }
 /* End definitions for 'Hash' */
 
-/* Begin definitions for 'Bracket'
+/* Begin definitions for 'Bracket' */
 Bracket::Bracket(char* first[]) {
     for (int i = 0; first[i] != NULL; ++i) {
         cmd1[i] = first[i];
@@ -242,7 +248,7 @@ bool Bracket::run() {
 bool Bracket::run(bool exitStatus) {
     return test(cmd1);
 }
-End definitions for 'Bracket' */
+/* End definitions for 'Bracket' */
 
 /* Begin definitions for 'ConnectorFactory' */
 Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons) {
