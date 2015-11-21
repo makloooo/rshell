@@ -1,0 +1,36 @@
+Script started on Fri 20 Nov 2015 10:28:10 PM PST
+[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ test bin && echo a
+a
+mlieu002@hammer.cs.ucr.edu$ echo b && test notExist || echo c
+b
+c
+mlieu002@hammer.cs.ucr.edu$ ls
+bin  debug  LICENSE.md	makefile  README.md  src  test_command.script  tests
+mlieu002@hammer.cs.ucr.edu$ test makefile && echo true
+true
+mlieu002@hammer.cs.ucr.edu$ test -e README.md && echo "this exists!"
+this exists!
+mlieu002@hammer.cs.ucr.edu$ test -d README.md && echo "This isn't a directory though!"
+mlieu002@hammer.cs.ucr.edu$ test -f README.md && echo "This, however, is a regular file."
+This, however, is a regular file.
+mlieu002@hammer.cs.ucr.edu$ (test -e src || echo "doesn't exist" && test -d bin && echo "that exists though"
+that exists though
+mlieu002@hammer.cs.ucr.edu$ [ -d bin ] && echo bracket operators also work
+bracket operators also work
+mlieu002@hammer.cs.ucr.edu$ [ asdf ] || echo work with connectors too
+work with connectors too
+mlieu002@hammer.cs.ucr.edu$ f
+execvp failed: No such file or directory
+mlieu002@hammer.cs.ucr.edu$ [ -f LICENSE.md ] && [ -d src ] || echo "this won't echo"
+-f
+LICENSE.md
+-d
+src
+mlieu002@hammer.cs.ucr.edu$ ([ -f README.md ] && [ -f LICENSE.md ]) && echo "this will though"
+this will though
+mlieu002@hammer.cs.ucr.edu$ exit 
+[mlieu002@hammer rshell]$ exit
+exit
+
+Script done on Fri 20 Nov 2015 10:34:41 PM PST

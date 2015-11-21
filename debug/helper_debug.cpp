@@ -107,9 +107,13 @@ bool test(char* argv[]) {
 
     // Forks our process and stores its ID into a variable "child id"
     
+    printLine(20);
+
     struct stat fileStat;
 
+    cout << "[DEBUG] Statting "; printArgs(argv); cout << "!" << endl;
     if (argv[1][0] == '-') { // If this is a flag
+        cout << "[DEBUG] Flag detected!" << endl;
         if (stat(argv[2], &fileStat) == 0) {
             if (argv[1][1] == 'e') return true;
             else if (argv[1][1] == 'f') return S_ISREG(fileStat.st_mode);
@@ -121,6 +125,10 @@ bool test(char* argv[]) {
         }
         else return false;
     }
+    cout << "[DEBUG] No flag detected." << endl;
+
+    printLine(20);
+
     return (stat(argv[1], &fileStat) == 0); 
 }
 
@@ -128,9 +136,16 @@ Connector* buildTree(list<char**>& args, list<char*>& cons) {
     // Returns the head of the tree.
     // Allocated data here can be deleted during cleanup via preorder deletion.
     
+    printLine(30);
+
     ConnectorFactory factory;
+    // cout << "[DEBUG] Throwing "; printArgs(args.front()); cout << " into leftCmd." << endl;
+    cout << "[DEBUG] Building left node branch." << endl;
     Connector* leftCmd = factory.createBranch(args, cons); 
+    cout << "[DEBUG] Left node Subtree Built." << endl;
+    // if (leftCmd != NULL) cout << "[DEBUG] leftCmd holds "; printArgs(leftCmd->getCmd()); cout << endl;
     if (args.empty()) {
+        cout << "[DEBUG] args list held one element only, returning..." << endl;
         return leftCmd;
     }
 
@@ -146,17 +161,22 @@ Connector* buildTree(list<char**>& args, list<char*>& cons) {
                 break;
             }
             currHead = factory.createConnector(checkConnectors(cons.front()));
+            cout << "[DEBUG] currHead speaking: "; currHead->identify();
             cons.pop_front();
 
-            rightCmd = factory.createBranch(args, cons); 
-            // This is going to handle precedence.
+            rightCmd = factory.createBranch(args, cons); // This is going to handle precedence.
+            cout << "[DEBUG] Branch created." << endl;
 
             currHead->setLeft(leftCmd);
             currHead->setRight(rightCmd);
+            cout << "[DEBUG] Statement: leftCmd = currHead" << endl;
             leftCmd = currHead; // Sets left leaf to be current head.
+            cout << "[DEBUG] leftCmd: "; leftCmd->identify();
         }
         if (args.empty() && !cons.empty()) cons.pop_front();
     }
+   
+    printLine(30);
 
     return currHead;
 }
@@ -197,9 +217,7 @@ bool isDblConnector(char* argv) {
 bool isAttached(char* argv) {
     if (strlen(argv) < 1) return false;
     else if (argv[strlen(argv) - 1] == ';') return true;
-    else if (argv[strlen(argv) - 2] == ';' && hasEndParenthesis(argv)) {
-        return true;
-    }
+    else if (argv[strlen(argv) - 2] == ';' && hasEndParenthesis(argv)) return true;
     return false;
 }
 
@@ -214,11 +232,8 @@ bool isQuoteBegin(char* argv) {
 
 bool isQuoteEnd(char* argv) {
     if (argv[strlen(argv) - 1] == '"') return true;
-    else if (hasEndParenthesis(argv) && argv[strlen(argv) - 2] == '"') {
-        return true;
-    }
-    else if (isAttached(argv) && (argv[strlen(argv) - 3] == '"' || 
-             argv[strlen(argv) - 2] == '"')) return true;
+    else if (hasEndParenthesis(argv) && argv[strlen(argv) - 2] == '"') return true;
+    else if (isAttached(argv) && (argv[strlen(argv) - 3] == '"' || argv[strlen(argv) - 2] == '"')) return true;
     return false;
 }
 

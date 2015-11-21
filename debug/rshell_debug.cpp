@@ -71,6 +71,10 @@ int main(int argc, char* argv[], char *envp[]) {
             }
         }
 
+        cout << "[DEBUG] Data.size(): " << data.size() << endl;
+
+        printLine(40);
+
         // Creating the two argument and connector lists
         int last; // There definitely has to be a better way to do this.
         char* cmd[128][256]; 
@@ -81,16 +85,19 @@ int main(int argc, char* argv[], char *envp[]) {
             cutEndSpaces(tokens.front());
             if (isQuoteBegin(tokens.front())) { // Quote parsing
                 trim(tokens.front());
-                while (!isQuoteEnd(tokens.front())) { 
-                // Input clause should prevent infinite loop
+                while (!isQuoteEnd(tokens.front())) { // Input clause should prevent infinite loop
+                    cout << "[DEBUG] cmd[" << n << "][" << i << "] = "; printArg(tokens.front()); cout << endl;
                     cmd[n][i] = tokens.front();
                     tokens.pop_front();
                     ++i;
                 }
+                cout << "[DEBUG] Before truncation: "; printArg(tokens.front()); cout << endl;
                 truncate(tokens.front()); // Cuts off the quotation mark
+                cout << "[DEBUG] After truncation: "; printArg(tokens.front()); cout << endl;
                 if (isAttached(tokens.front())) { // Same clause as below 
-                    truncate(tokens.front()); 
-                    // This one should cut off the semicolon 
+                    cout << "[DEBUG] Before truncation: "; printArg(tokens.front()); cout << endl;
+                    truncate(tokens.front()); // This one should cut off the semicolon 
+                    cout << "[DEBUG] After truncation: "; printArg(tokens.front()); cout << endl;
                     cmd[n][i] = tokens.front(); 
                     tokens.front() = new char[1]; 
                     data.push_back(tokens.front());
@@ -100,14 +107,19 @@ int main(int argc, char* argv[], char *envp[]) {
                 else {
                     cmd[n][i] = tokens.front(); // Throws it into the list
                 }
+                if (tokens.front() != '\0') { 
+                    cout << "[DEBUG] Current tokens.front(): "; printArg(tokens.front()); cout << endl;
+                }
+                else {
+                    cout << "[DEBUG] Current tokens.front(): NULL" << endl;
+                }
                 ++i;
             }
             else if (isComment(tokens.front())) break;
             else if (isConnector(tokens.front())) {
                 if (isAttached(tokens.front())) { 
                     // Pesky semicolons being attached...
-                    truncate(tokens.front()); 
-                    // Cuts out the semicolon, leaves rest of stack 
+                    truncate(tokens.front()); // Cuts out the semicolon, leaves rest of stack 
                     cmd[n][i] = tokens.front(); 
                     tokens.front() = new char[1]; 
                     data.push_back(tokens.front());
@@ -122,13 +134,14 @@ int main(int argc, char* argv[], char *envp[]) {
                 ++n;
                 i = -1; // Reset argc
             }
-            else if (isTestBegin(tokens.front()) && i == 0) { 
-                // Essentially converting "[" to "test"
+            else if (isTestBegin(tokens.front()) && i == 0) { // Essentially converting "[" to "test"
                 cmd[n][0] = new char[4];
                 strcpy(cmd[n][0], "test");
                 data.push_back(cmd[n][0]); // potential glibc
+                cout << "[DEBUG] Popping "; printArg(tokens.front());
                 tokens.pop_front(); // Killing "[" from tokens.
                 for (i = 1; !isTestEnd(tokens.front()); ++i) {
+                    cout << "[DEBUG] cmd[" << n << "][" << i << "] = "; printArg(tokens.front()); cout << endl;
                     cmd[n][i] = tokens.front();
                     tokens.pop_front();
                 }
@@ -146,19 +159,28 @@ int main(int argc, char* argv[], char *envp[]) {
             arguments.push_back(cmd[n]);
         }
 
+        // Debug printing:
+        cout << "[DEBUG] Contents of 'arguments': " << endl; printQueue(arguments);
+        cout << "[DEBUG] Contents of 'connectors': "; printQueue(connectors);
+
         Connector* head = NULL;
         head = buildTree(arguments, connectors);
+        cout << "[DEBUG] Tree built successfully... possibly!" << endl;
+        cout << "[DEBUG] head speaking: "; head->identify();
+        printLine(20); printTree(head); printLine(20);
         head->run();
 
         while (!connectors.empty()) connectors.pop_front();
         while (!arguments.empty()) arguments.pop_front(); 
         // If, for some reason, these two are not empty.
         while (!data.empty()) {
+            cout << "[DEBUG] Deleting "; printArg(data.front()); cout << endl;
             delete[] data.front();
             // This deallocates the entire command string.
             data.pop_front();
         }
         head->destroyBranch(head);
+        printLine(40);
         printInfo(login, host);
         cout << "$ ";
     }

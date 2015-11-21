@@ -24,6 +24,7 @@ bool Connector::execute(char* args[]) {
     else if (strcmp(args[0], "test") == 0) {
         // return test(args);
         bool success = test(args);
+        cout << "[DEBUG] Test yielded "; (success) ? cout << "true" : cout << "false"; cout << endl;
         return success;
     }
 
@@ -40,21 +41,32 @@ bool Connector::execute(char* args[]) {
     }
     else if (c_pid == 0) { 
         // If the fork succeeds, and this is the child process
+        cout << "[DEBUG] --------------------" << endl;
+        cout << "[DEBUG] I'm a child process." << endl;
+        cout << "[DEBUG] Executing "; printArgs(args); cout << endl;
         execvp(args[0], args);
         perror("execvp failed");
         exit(EXIT_FAILURE);
     }
     else if (c_pid > 0) { 
         // If the fork succeeds, and this is the parent process
+        cout << "[DEBUG] I'm the parent process." << endl;
         if ( (pid = wait(&status)) < 0) {
             perror("wait failed");
             exit(EXIT_FAILURE);
         }
+         cout << "[DEBUG] -------------------" << endl;
+        cout << "[DEBUG] Child finished its job with exit status " 
+             << status << '.' << endl;
     }
+    cout << "[DEBUG] WIFEXITED yielded "; 
+    (WIFEXITED(status)) ? cout << "true" : cout << "false"; 
+    cout << endl;
     return (status == 0); // I'M CHEATING
 }
 
 bool Connector::run() {
+    cout << "[DEBUG] Running my commands! By the way, "; this->identify();
     return execute(command);
 }
 
@@ -118,7 +130,9 @@ Ampersand::~Ampersand() {
 }
 
 bool Ampersand::run() {
+    cout << "[DEBUG] Running my commands! By the way, "; this->identify();
     if (!left->run()) return false; // And don't run the next command
+    cout << "[DEBUG] Running second command." << endl;
     return right->run();
 }
 
@@ -143,6 +157,7 @@ DoubleBars::~DoubleBars() {
 }
 
 bool DoubleBars::run() {
+    cout << "[DEBUG] Running my commands! By the way, "; this->identify();
     if (!left->run()) {
         return right->run();
     }
@@ -173,6 +188,7 @@ Semicolon::~Semicolon() {
 }
 
 bool Semicolon::run() {
+    cout << "[DEBUG] Running my commands! By the way, "; this->identify();
     bool success = false;
     if (hasLeft()) success = left->run();
     if (hasRight()) return right->run(); // Should always run the next command.
@@ -213,11 +229,13 @@ void Hash::identify() {
 /* End definitions for 'Hash' */
 
 /* Begin definitions for 'ConnectorFactory' */
-Connector* ConnectorFactory::createBranch
-(list<char**>& args, list<char*>& cons) {
+Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons) {
     
     // This is almost the same algorithm as BuildTree()
     // If has more right branches, build via recursion.
+
+    printLine(20);
+    cout << "[DEBUG] Creating new Sub-Tree." << endl;
 
     Connector* subHead = NULL;
     Connector* left = NULL;
@@ -229,32 +247,42 @@ Connector* ConnectorFactory::createBranch
         hasEndParenthesis(args.front());
         left = factory.createBranch(args, cons);
         // args.pop_front();
-        for (int i = 0; !args.empty() && 
-            !hasEndParenthesis(args.front()); ++i) { 
-            // Input should not allow infinite loop here
+        cout << "[DEBUG] left: "; left->identify();
+        for (int i = 0; !args.empty() && !hasEndParenthesis(args.front()); ++i) { // Input should not allow infinite loop here
             subHead = factory.createConnector(checkConnectors(cons.front()));
             cons.pop_front();
             right = factory.createBranch(args, cons); 
             subHead->setLeft(left);
             subHead->setRight(right);
+            cout << "[DEBUG] Statement: left = subHead" << endl;
             left = subHead;
+            cout << "[DEBUG] left: "; left->identify();
         }
+        cout << "[DEBUG] args.front() is terminated by ')'" << endl;
         if (!args.empty()) {
+            cout << "[DEBUG] Attaching argument to right leaf." << endl;
             right = factory.createBranch(args, cons);
             subHead = factory.createConnector(checkConnectors(cons.front()));
             cons.pop_front();
             subHead->setLeft(left);
             subHead->setRight(right);
+            cout << "[DEBUG] Statement: left = subHead" << endl;
             left = subHead;
+            cout << "[DEBUG] left: "; left->identify();
         }
         else {
+            cout << "[DEBUG] No argument to attach to right node - remaining NULL." << endl;
             subHead = left;
         }
     }
     else {
+        cout << "[DEBUG] Doesn't have precedence.\n[DEBUG] Creating right leaf." << endl;
         subHead = new Connector(args.front());
+        cout << "[DEBUG] Right leaf holds "; printArgs(subHead->getCmd()); cout << endl;
         args.pop_front();
     }
+
+    printLine(20);
 
     return subHead; 
 }
