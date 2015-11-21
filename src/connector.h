@@ -66,15 +66,6 @@ class Hash : public Connector {
         void identify();
 };
 
-/*
-class Bracket : public Connector {
-    public:
-        Bracket(char* first[]);
-        ~Bracket();
-        bool run();
-};
-*/
-
 class ConnectorFactory {
     public:
         Connector* createBranch(list<char**>&, list<char*>&);

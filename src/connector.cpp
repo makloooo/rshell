@@ -228,29 +228,6 @@ void Hash::identify() {
 }
 /* End definitions for 'Hash' */
 
-/* Begin definitions for 'Bracket'
-Bracket::Bracket(char* argv[]) {
-    for (int i = 0; argv[i] != '\0'; ++i) {
-        command[i+1] = argv[i];
-        command[i+2] = '\0';
-    }
-    left = NULL;
-    right = NULL;
-}
-
-Bracket::~Bracket() {
-    setNull(cmd1);
-}
-
-bool Bracket::run() {
-    return test(cmd1);
-}
-
-bool Bracket::run(bool exitStatus) {
-    return test(cmd1);
-}
-End definitions for 'Bracket' */
-
 /* Begin definitions for 'ConnectorFactory' */
 Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons) {
     
@@ -268,8 +245,8 @@ Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons)
 
     if (hasStartParenthesis(args.front()[0])) {
         hasEndParenthesis(args.front());
-        left = new Connector(args.front());
-        args.pop_front();
+        left = factory.createBranch(args, cons);
+        // args.pop_front();
         cout << "[DEBUG] left: "; left->identify();
         for (int i = 0; !args.empty() && !hasEndParenthesis(args.front()); ++i) { // Input should not allow infinite loop here
             subHead = factory.createConnector(checkConnectors(cons.front()));

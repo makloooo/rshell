@@ -200,7 +200,8 @@ bool isDblConnector(char* argv) {
 }
 
 bool isAttached(char* argv) {
-    if (strlen(argv) > 1 && (argv[strlen(argv) - 1] == ';')) return true;
+    if (strlen(argv) > 1) return false;
+    else if (argv[strlen(argv) - 1] == ';') return true;
     return false;
 }
 
@@ -209,7 +210,9 @@ bool isTestBegin(char* argv) {
 }
 
 bool isTestEnd(char* argv) {
-    return (strcmp(argv, "]") == 0) ? true : false;
+    if (strcmp(argv, "]") == 0) return true;
+    else if (strcmp(argv, "])") == 0) return true;
+    return false;
 }
 
 bool hasStartParenthesis(char*& arg) {
