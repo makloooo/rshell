@@ -81,7 +81,7 @@ int main(int argc, char* argv[], char *envp[]) {
         int n = 0;
         for (int i = 0; !tokens.empty(); ++i) {
             cutEndSpaces(tokens.front());
-            if (isComment(tokens.front()));
+            if (isComment(tokens.front())) break;
             else if (isConnector(tokens.front())) {
                 if (isAttached(tokens.front())) { 
                     // Pesky semicolons being attached...
@@ -99,6 +99,9 @@ int main(int argc, char* argv[], char *envp[]) {
               
                 ++n;
                 i = -1; // Reset argc
+            }
+            else if (isQuoteBegin(tokens.front())) {
+                
             }
             else if (isTestBegin(tokens.front()) && i == 0) { // Essentially converting "[" to "test"
                 cmd[n][0] = new char[4];

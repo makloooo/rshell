@@ -26,8 +26,11 @@ bool isConnector(char*);
 bool isDblConnector(char*);
 bool isAttached(char*);
 bool isComment(char*);
+bool isQuoteBegin(char*);
+bool isQuoteEnd(char*);
 bool isTestBegin(char*);
 bool isTestEnd(char*);
 bool hasStartParenthesis(char*&);
+bool hasEndParenthesis(char*);
 bool hasEndParenthesis(char**&);
 #endif

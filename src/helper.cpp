@@ -1,6 +1,9 @@
 #include "helper.h"
 
 void truncate(char*& argv) {
+    if (argv[strlen(argv) - 2] == ';' && hasEndParenthesis(argv)) {
+        argv[strlen(argv) - 2] = ')';
+    }
     argv[strlen(argv) - 1] = '\0';
     return;
 }
@@ -181,7 +184,7 @@ void printTree(Connector* node) {
 
 int checkConnectors(char* argv) {
     // This will be returning flags.
-    if (strcmp(argv, ";") == 0 || argv[strlen(argv) - 1] == ';') return 0;
+    if (strcmp(argv, ";") == 0 || isAttached(argv)) return 0;
     else if (strcmp(argv, "#") == 0) return 1;
     else if (strcmp(argv, "||") == 0) return 2;
     else if (strcmp(argv, "&&") == 0) return 3;
@@ -200,13 +203,24 @@ bool isDblConnector(char* argv) {
 }
 
 bool isAttached(char* argv) {
-    if (strlen(argv) > 1) return false;
+    if (strlen(argv) < 1) return false;
     else if (argv[strlen(argv) - 1] == ';') return true;
+    else if (argv[strlen(argv) - 2] == ';' && hasEndParenthesis(argv)) return true;
     return false;
 }
 
 bool isComment(char* argv) {
     return (argv[0] == '#') ? true : false;
+}
+
+bool isQuoteBegin(char* argv) {
+    return (strcmp(argv, "\"") == 0) ? true : false;
+}
+
+bool isQuoteEnd(char* argv) {
+    if (argv[strlen(argv) - 1] == '"') return true;
+    else if (hasEndParenthesis(argv) && argv[strlen(argv) - 2] == '"') return true;
+    return false;
 }
 
 bool isTestBegin(char* argv) {
@@ -225,6 +239,10 @@ bool hasStartParenthesis(char*& arg) {
         return true;
     }
     return false;
+}
+
+bool hasEndParenthesis(char* args) {
+    return (args[strlen(args) - 1] == ')') ? true : false;
 }
 
 bool hasEndParenthesis(char**& args) {
