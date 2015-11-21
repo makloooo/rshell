@@ -99,12 +99,24 @@ int main(int argc, char* argv[], char *envp[]) {
                 ++n;
                 i = -1; // Reset argc
             }
+            else if (isTestBegin(tokens.front()) && i == 0) { // Essentially converting "[" to "test"
+                cmd[n][0] = new char[4];
+                strcpy(cmd[n][0], "test");
+                data.push_back(cmd[n][0]); // potential glibc
+                cout << "[DEBUG] Popping "; printArg(tokens.front());
+                tokens.pop_front(); // Killing "[" from tokens.
+                for (i = 1; !isTestEnd(tokens.front()); ++i) {
+                    cout << "[DEBUG] cmd[" << n << "][" << i << "] = "; printArg(tokens.front()); cout << endl;
+                    cmd[n][i] = tokens.front();
+                    tokens.pop_front();
+                }
+            }
             else {
                 cmd[n][i] = tokens.front(); 
                 // Assigns cmd[i] to pointer at tokens.front(). 
                 // Tokens contains cstrings
             }
-            tokens.pop_front();
+            tokens.pop_front(); // Should take care of "]"
             last = i;
         }
         if (cmd[n][0] != '\0') { // Push in the last argument

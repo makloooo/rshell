@@ -194,13 +194,22 @@ bool isConnector(char* argv) {
 }
 
 bool isDblConnector(char* argv) {
-    if (checkConnectors(argv) > 1) return true;
+    int flag = checkConnectors(argv);
+    if (flag == 2 || flag == 3) return true;
     return false;
 }
 
 bool isAttached(char* argv) {
     if (strlen(argv) > 1 && (argv[strlen(argv) - 1] == ';')) return true;
     return false;
+}
+
+bool isTestBegin(char* argv) {
+    return (strcmp(argv, "[") == 0) ? true : false;
+}
+
+bool isTestEnd(char* argv) {
+    return (strcmp(argv, "]") == 0) ? true : false;
 }
 
 bool hasStartParenthesis(char*& arg) {

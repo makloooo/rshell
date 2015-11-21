@@ -228,13 +228,14 @@ void Hash::identify() {
 }
 /* End definitions for 'Hash' */
 
-/* Begin definitions for 'Bracket' */
-Bracket::Bracket(char* first[]) {
-    for (int i = 0; first[i] != NULL; ++i) {
-        cmd1[i] = first[i];
-        cmd1[i+1] = '\0';
+/* Begin definitions for 'Bracket'
+Bracket::Bracket(char* argv[]) {
+    for (int i = 0; argv[i] != '\0'; ++i) {
+        command[i+1] = argv[i];
+        command[i+2] = '\0';
     }
-    cmd2[0] = '\0';
+    left = NULL;
+    right = NULL;
 }
 
 Bracket::~Bracket() {
@@ -248,7 +249,7 @@ bool Bracket::run() {
 bool Bracket::run(bool exitStatus) {
     return test(cmd1);
 }
-/* End definitions for 'Bracket' */
+End definitions for 'Bracket' */
 
 /* Begin definitions for 'ConnectorFactory' */
 Connector* ConnectorFactory::createBranch(list<char**>& args, list<char*>& cons) {
