@@ -81,7 +81,8 @@ int main(int argc, char* argv[], char *envp[]) {
         int n = 0;
         for (int i = 0; !tokens.empty(); ++i) {
             cutEndSpaces(tokens.front());
-            if (isConnector(tokens.front())) {
+            if (isComment(tokens.front()));
+            else if (isConnector(tokens.front())) {
                 if (isAttached(tokens.front())) { 
                     // Pesky semicolons being attached...
                     truncate(tokens.front()); 

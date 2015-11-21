@@ -205,6 +205,10 @@ bool isAttached(char* argv) {
     return false;
 }
 
+bool isComment(char* argv) {
+    return (argv[0] == '#') ? true : false;
+}
+
 bool isTestBegin(char* argv) {
     return (strcmp(argv, "[") == 0) ? true : false;
 }

@@ -25,6 +25,7 @@ int checkConnectors(char*);
 bool isConnector(char*);
 bool isDblConnector(char*);
 bool isAttached(char*);
+bool isComment(char*);
 bool isTestBegin(char*);
 bool isTestEnd(char*);
 bool hasStartParenthesis(char*&);
