@@ -1,0 +1,34 @@
+Script started on Fri 20 Nov 2015 10:48:28 PM PST
+[mlieu002@hammer rshell]$ ./bin/rshell
+mlieu002@hammer.cs.ucr.edu$ echo a && echo b||| echo c && echo d
+a
+b
+d
+mlieu002@hammer.cs.ucr.edu$ (echo a && echo b) || (echo c && echo d)
+a
+b
+mlieu002@hammer.cs.ucr.edu$ ((echo a && echobb) || echo c) && (echo d || (echo e && echo f)))
+a
+b
+d
+mlieu002@hammer.cs.ucr.edu$ (((echo a && echo b) || echo c) && echo d)
+a
+b
+d
+mlieu002@hammer.cs.ucr.edu$ (echo "I don't know what else you want me to test...")
+I don't know what else you want me to test...
+mlieu002@hammer.cs.ucr.edu$ (echo "Oh... testing." && test -e nothere || echo "Right...")
+Oh... testing.
+Right...
+mlieu002@hammer.cs.ucr.edu$ ([ -d bin ] && test -e makefile) && echo this works 
+this works
+mlieu002@hammer.cs.ucr.edu$ (([ -ddbin]] && test -e wow) || [ -d src ]) && echo wow
+wow
+mlieu002@hammer.cs.ucr.edu$ ((([ -f makefile ]) && [ -d bin ]) && [ -f notexist ]) && echo yes?
+mlieu002@hammer.cs.ucr.edu$ echo no.
+no.
+mlieu002@hammer.cs.ucr.edu$ exit
+[mlieu002@hammer rshell]$ exit
+exit
+
+Script done on Fri 20 Nov 2015 10:54:59 PM PST
