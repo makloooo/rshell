@@ -42,7 +42,7 @@ int main(int argc, char* argv[], char *envp[]) {
         // This data is universal. It will be used until deallocated.
 
         strcpy(cstrcmd, command.c_str());
-        data.push_back(cstrcmd); 
+        data.push_back(cstrcmd);
         // This is to hold locations of the data to deallocate later
         
         tokens = parse(cstrcmd);
@@ -71,6 +71,8 @@ int main(int argc, char* argv[], char *envp[]) {
             }
         }
 
+        cout << "[DEBUG] Data.size(): " << data.size() << endl;
+
         printLine(40);
 
         // Creating the two argument and connector lists
@@ -81,11 +83,43 @@ int main(int argc, char* argv[], char *envp[]) {
         int n = 0;
         for (int i = 0; !tokens.empty(); ++i) {
             cutEndSpaces(tokens.front());
-            if (isComment(tokens.front())) break;
+            if (isQuoteBegin(tokens.front())) { // Quote parsing
+                trim(tokens.front());
+                while (!isQuoteEnd(tokens.front())) { // Input clause should prevent infinite loop
+                    cout << "[DEBUG] cmd[" << n << "][" << i << "] = "; printArg(tokens.front()); cout << endl;
+                    cmd[n][i] = tokens.front();
+                    tokens.pop_front();
+                    ++i;
+                }
+                cout << "[DEBUG] Before truncation: "; printArg(tokens.front()); cout << endl;
+                truncate(tokens.front()); // Cuts off the quotation mark
+                cout << "[DEBUG] After truncation: "; printArg(tokens.front()); cout << endl;
+                if (isAttached(tokens.front())) { // Same clause as below 
+                    cout << "[DEBUG] Before truncation: "; printArg(tokens.front()); cout << endl;
+                    truncate(tokens.front()); // This one should cut off the semicolon 
+                    cout << "[DEBUG] After truncation: "; printArg(tokens.front()); cout << endl;
+                    cmd[n][i] = tokens.front(); 
+                    tokens.front() = new char[1]; 
+                    data.push_back(tokens.front());
+                    strcpy(tokens.front(), ";\0"); 
+                    tokens.push_front(NULL); // Phony Value
+                }
+                else {
+                    cmd[n][i] = tokens.front(); // Throws it into the list
+                }
+                if (tokens.front() != '\0') { 
+                    cout << "[DEBUG] Current tokens.front(): "; printArg(tokens.front()); cout << endl;
+                }
+                else {
+                    cout << "[DEBUG] Current tokens.front(): NULL" << endl;
+                }
+                ++i;
+            }
+            else if (isComment(tokens.front())) break;
             else if (isConnector(tokens.front())) {
                 if (isAttached(tokens.front())) { 
                     // Pesky semicolons being attached...
-                    truncate(tokens.front()); 
+                    truncate(tokens.front()); // Cuts out the semicolon, leaves rest of stack 
                     cmd[n][i] = tokens.front(); 
                     tokens.front() = new char[1]; 
                     data.push_back(tokens.front());
@@ -99,9 +133,6 @@ int main(int argc, char* argv[], char *envp[]) {
               
                 ++n;
                 i = -1; // Reset argc
-            }
-            else if (isQuoteBegin(tokens.front())) {
-                
             }
             else if (isTestBegin(tokens.front()) && i == 0) { // Essentially converting "[" to "test"
                 cmd[n][0] = new char[4];
@@ -143,7 +174,8 @@ int main(int argc, char* argv[], char *envp[]) {
         while (!arguments.empty()) arguments.pop_front(); 
         // If, for some reason, these two are not empty.
         while (!data.empty()) {
-            delete[] data.front(); 
+            cout << "[DEBUG] Deleting "; printArg(data.front()); cout << endl;
+            delete[] data.front();
             // This deallocates the entire command string.
             data.pop_front();
         }

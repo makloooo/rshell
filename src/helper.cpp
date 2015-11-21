@@ -1,8 +1,20 @@
 #include "helper.h"
 
 void truncate(char*& argv) {
-    if (argv[strlen(argv) - 2] == ';' && hasEndParenthesis(argv)) {
+    // General level 3 depth - ";)
+    if (hasEndParenthesis(argv) && isAttached(argv) && isQuoteEnd(argv)) {
+        argv[strlen(argv) - 3] = ';';
         argv[strlen(argv) - 2] = ')';
+    }
+    // General level 2 depth - ") or ;) or ";
+    else if (argv[strlen(argv) - 2] == ';' && hasEndParenthesis(argv)) {
+        argv[strlen(argv) - 2] = ')';
+    }
+    else if (argv[strlen(argv) - 2] == '"' && hasEndParenthesis(argv)) {
+        argv[strlen(argv) - 2] = ')';
+    }
+    else if (argv[strlen(argv) - 2] == '"' && isAttached(argv)) {
+        argv[strlen(argv) - 2] = ';';
     }
     argv[strlen(argv) - 1] = '\0';
     return;
@@ -214,12 +226,14 @@ bool isComment(char* argv) {
 }
 
 bool isQuoteBegin(char* argv) {
-    return (strcmp(argv, "\"") == 0) ? true : false;
+    if (strlen(argv) <= 1) return false;
+    return (argv[0] == '"') ? true : false;
 }
 
 bool isQuoteEnd(char* argv) {
     if (argv[strlen(argv) - 1] == '"') return true;
     else if (hasEndParenthesis(argv) && argv[strlen(argv) - 2] == '"') return true;
+    else if (isAttached(argv) && (argv[strlen(argv) - 3] == '"' || argv[strlen(argv) - 2] == '"')) return true;
     return false;
 }
 
